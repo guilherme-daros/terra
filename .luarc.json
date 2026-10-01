@@ -1,0 +1,19 @@
+{
+  "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
+  "runtime.version": "LuaJIT",
+  "diagnostics.globals": [
+    "love"
+  ],
+  "workspace.library": [
+    "${3rd}/love2d/library"
+  ],
+  "workspace.checkThirdParty": "Disable",
+  "format.enable": true,
+  "format.defaultConfig": {
+    "indent_style": "space",
+    "indent_size": "4",
+    "quote_style": "double",
+    "call_arg_parentheses": "always",
+    "trailing_table_separator": "never"
+  }
+}
