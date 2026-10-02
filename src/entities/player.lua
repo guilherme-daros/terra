@@ -175,16 +175,16 @@ function Player:draw()
     -- Invulnerability blinking effect
     if self.invulnerableTimer > 0 and math.floor(love.timer.getTime() * 15) % 2 == 0 then
         -- Draw shield bubble when active
-        love.graphics.setColor(Colors.get("playerShield"))
+        love.graphics.setColor(Colors.getRGBA("playerShield"))
         love.graphics.circle("line", 0, 0, self.radius + 6)
         love.graphics.circle("fill", 0, 0, self.radius + 4)
     end
 
     -- Thruster flame when accelerating
     if self.isAccelerating then
-        love.graphics.setColor(Colors.get("flameOuter"))
+        love.graphics.setColor(Colors.getRGBA("flameOuter"))
         love.graphics.polygon("fill", -12, -5, -22 - math.random(0, 5), 0, -12, 5)
-        love.graphics.setColor(Colors.get("flameInner"))
+        love.graphics.setColor(Colors.getRGBA("flameInner"))
         love.graphics.polygon("fill", -12, -3, -17 - math.random(0, 3), 0, -12, 3)
     end
 
@@ -192,7 +192,7 @@ function Player:draw()
     self:drawShipModel(self.shipModel)
 
     love.graphics.pop()
-    love.graphics.setColor(Colors.get("white"))
+    love.graphics.setColor(Colors.getRGBA("white"))
 end
 
 function Player:drawShipModel(model)

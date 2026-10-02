@@ -1,5 +1,6 @@
 local hasNative, native = pcall(require, "cosmic_native")
-local Colors = require("src.core.colors")
+local hasFFI, ffi       = pcall(require, "ffi")
+local Colors            = require("src.core.colors")
 
 local Starfield = {}
 
@@ -46,19 +47,34 @@ end
 
 function Starfield:draw()
     if self.nativeEngine then
-        local buf = self.nativeEngine:get_buffer()
-        for i = 1, #buf, 4 do
-            local x, y, sz, br = buf[i], buf[i + 1], buf[i + 2], buf[i + 3]
-            love.graphics.setColor(Colors.get("starBase", br))
-            love.graphics.rectangle("fill", x, y, sz, sz)
+        if hasFFI and self.nativeEngine.get_raw_bytes and self.nativeEngine.get_star_count then
+            local rawBytes = self.nativeEngine:get_raw_bytes()
+            local count = self.nativeEngine:get_star_count()
+            local floatPtr = ffi.cast("const float*", rawBytes)
+            for i = 0, count - 1 do
+                local offset = i * 4
+                local x = floatPtr[offset]
+                local y = floatPtr[offset + 1]
+                local sz = floatPtr[offset + 2]
+                local br = floatPtr[offset + 3]
+                love.graphics.setColor(Colors.getRGBA("starBase", br))
+                love.graphics.rectangle("fill", x, y, sz, sz)
+            end
+        else
+            local buf = self.nativeEngine:get_buffer()
+            for i = 1, #buf, 4 do
+                local x, y, sz, br = buf[i], buf[i + 1], buf[i + 2], buf[i + 3]
+                love.graphics.setColor(Colors.getRGBA("starBase", br))
+                love.graphics.rectangle("fill", x, y, sz, sz)
+            end
         end
     else
         for _, star in ipairs(self.stars) do
-            love.graphics.setColor(Colors.get("starBase", star.brightness))
+            love.graphics.setColor(Colors.getRGBA("starBase", star.brightness))
             love.graphics.rectangle("fill", star.x, star.y, star.size, star.size)
         end
     end
-    love.graphics.setColor(Colors.get("white"))
+    love.graphics.setColor(Colors.getRGBA("white"))
 end
 
 return Starfield

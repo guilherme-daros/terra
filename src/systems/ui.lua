@@ -8,48 +8,48 @@ local UI = {}
 
 function UI.drawHUD(player, enemyManager, score, highScore, screenW)
     -- Health Bar Container
-    love.graphics.setColor(Colors.get("hpBg"))
+    love.graphics.setColor(Colors.getRGBA("hpBg"))
     love.graphics.rectangle("fill", 20, 20, 150, 16, 4)
     local hpPercent = math.max(0, player.health / player.maxHealth)
 
-    love.graphics.setColor(Colors.getHealthColor(hpPercent))
+    love.graphics.setColor(Colors.getHealthColorRGBA(hpPercent))
     love.graphics.rectangle("fill", 20, 20, 150 * hpPercent, 16, 4)
 
-    love.graphics.setColor(Colors.get("hpBorder"))
+    love.graphics.setColor(Colors.getRGBA("hpBorder"))
     love.graphics.rectangle("line", 20, 20, 150, 16, 4)
 
     -- Lives (Nerd Font Heart icons)
     love.graphics.setFont(Fonts.regular)
     for i = 1, player.lives do
-        love.graphics.setColor(Colors.get("heartIcon"))
+        love.graphics.setColor(Colors.getRGBA("heartIcon"))
         love.graphics.print(Fonts.icons.heart, 20 + (i - 1) * 20, 42)
     end
 
     -- Score & High Score
     love.graphics.setFont(Fonts.bold)
-    love.graphics.setColor(Colors.get("scoreText"))
+    love.graphics.setColor(Colors.getRGBA("scoreText"))
     love.graphics.printf(string.format("SCORE: %06d", score), 0, 18, screenW, "center")
 
     love.graphics.setFont(Fonts.small)
-    love.graphics.setColor(Colors.get("highScoreText"))
+    love.graphics.setColor(Colors.getRGBA("highScoreText"))
     love.graphics.printf(string.format("HIGH: %06d", highScore), 0, 38, screenW, "center")
 
     -- Wave Number
     love.graphics.setFont(Fonts.bold)
-    love.graphics.setColor(Colors.get("waveText"))
+    love.graphics.setColor(Colors.getRGBA("waveText"))
     love.graphics.printf(Fonts.icons.rocket .. " WAVE " .. enemyManager.wave, screenW - 160, 18, 140, "right")
 
     -- Active Powerup Indicators
     love.graphics.setFont(Fonts.medium)
     local activeY = 40
     if player.weaponTimer > 0 then
-        love.graphics.setColor(Colors.get("activeTriple"))
+        love.graphics.setColor(Colors.getRGBA("activeTriple"))
         local weaponText = Fonts.icons.triple .. " " .. string.upper(player.weaponType) .. " (" .. math.ceil(player.weaponTimer) .. "s)"
         love.graphics.printf(weaponText, screenW - 240, activeY, 220, "right")
         activeY = activeY + 20
     end
     if player.invulnerableTimer > 0 then
-        love.graphics.setColor(Colors.get("activeShield"))
+        love.graphics.setColor(Colors.getRGBA("activeShield"))
         local shieldText = Fonts.icons.shield .. " SHIELD (" .. math.ceil(player.invulnerableTimer) .. "s)"
         love.graphics.printf(shieldText, screenW - 240, activeY, 220, "right")
     end
@@ -63,7 +63,7 @@ function UI.drawMenu(screenW, screenH)
     love.graphics.translate(screenW / 2, 175)
     love.graphics.scale(pulse, pulse)
     love.graphics.setFont(Fonts.title)
-    love.graphics.setColor(Colors.get("titleText"))
+    love.graphics.setColor(Colors.getRGBA("titleText"))
     love.graphics.printf(Fonts.icons.rocket .. " COSMIC DEFENDER " .. Fonts.icons.rocket, -screenW / 2, -20, screenW, "center")
     love.graphics.pop()
 
@@ -73,13 +73,13 @@ function UI.drawMenu(screenW, screenH)
     local boxX = (screenW - boxWidth) / 2
     local boxY = 225
 
-    love.graphics.setColor(Colors.get("menuBoxBg"))
+    love.graphics.setColor(Colors.getRGBA("menuBoxBg"))
     love.graphics.rectangle("fill", boxX, boxY, boxWidth, boxHeight, 8)
-    love.graphics.setColor(Colors.get("menuBoxBorder"))
+    love.graphics.setColor(Colors.getRGBA("menuBoxBorder"))
     love.graphics.rectangle("line", boxX, boxY, boxWidth, boxHeight, 8)
 
     love.graphics.setFont(Fonts.bold)
-    love.graphics.setColor(Colors.get("menuTextPrimary"))
+    love.graphics.setColor(Colors.getRGBA("menuTextPrimary"))
     love.graphics.printf("CONTROLS & POWER-UPS", 0, boxY + 10, screenW, "center")
 
     -- 3 Left-Aligned Columns for Controls
@@ -99,7 +99,7 @@ function UI.drawMenu(screenW, screenH)
     }
 
     love.graphics.setFont(Fonts.medium)
-    love.graphics.setColor(Colors.get("menuTextBody"))
+    love.graphics.setColor(Colors.getRGBA("menuTextBody"))
 
     for i, row in ipairs(controlRows) do
         local ry = startY + (i - 1) * lineHeight
@@ -109,14 +109,14 @@ function UI.drawMenu(screenW, screenH)
     end
 
     -- Bottom Power-ups Summary Line
-    love.graphics.setColor(Colors.get("menuTextFooter"))
+    love.graphics.setColor(Colors.getRGBA("menuTextFooter"))
     love.graphics.printf(Fonts.icons.heart .. " Health    " .. Fonts.icons.triple .. " Triple Shot    " .. Fonts.icons.shield .. " Energy Shield", 0, boxY + 188, screenW, "center")
 
     -- Start / Quit Prompt
     local blink = math.floor(love.timer.getTime() * 2) % 2 == 0
     if blink then
         love.graphics.setFont(Fonts.bold)
-        love.graphics.setColor(Colors.get("menuPrompt"))
+        love.graphics.setColor(Colors.getRGBA("menuPrompt"))
         love.graphics.printf("PRESS SPACE / ENTER TO START  •  PRESS Q / ESC TO QUIT", 0, 475, screenW, "center")
     end
 end
@@ -124,11 +124,11 @@ end
 function UI.drawNotification(text, opacity, screenW)
     if not text or opacity <= 0 then return end
     love.graphics.setFont(Fonts.medium)
-    love.graphics.setColor(Colors.get("menuBoxBg", opacity * 0.9))
+    love.graphics.setColor(Colors.getRGBA("menuBoxBg", opacity * 0.9))
     love.graphics.rectangle("fill", screenW / 2 - 170, 18, 340, 32, 6)
-    love.graphics.setColor(Colors.get("menuBoxBorder", opacity))
+    love.graphics.setColor(Colors.getRGBA("menuBoxBorder", opacity))
     love.graphics.rectangle("line", screenW / 2 - 170, 18, 340, 32, 6)
-    love.graphics.setColor(Colors.get("white", opacity))
+    love.graphics.setColor(Colors.getRGBA("white", opacity))
     love.graphics.printf(text, 0, 24, screenW, "center")
 end
 
@@ -137,15 +137,15 @@ function UI.drawGameOver(score, wave, screenW, screenH)
 end
 
 function UI.drawOverlay(title, subtitle, screenW, screenH)
-    love.graphics.setColor(Colors.get("overlayBg"))
+    love.graphics.setColor(Colors.getRGBA("overlayBg"))
     love.graphics.rectangle("fill", 0, 0, screenW, screenH)
 
     love.graphics.setFont(Fonts.large)
-    love.graphics.setColor(Colors.get("pauseHeader"))
+    love.graphics.setColor(Colors.getRGBA("pauseHeader"))
     love.graphics.printf(title, 0, screenH / 2 - 50, screenW, "center")
 
     love.graphics.setFont(Fonts.regular)
-    love.graphics.setColor(Colors.get("menuTextPrimary", 0.9))
+    love.graphics.setColor(Colors.getRGBA("menuTextPrimary", 0.9))
     love.graphics.printf(subtitle, 0, screenH / 2 + 10, screenW, "center")
 end
 
@@ -174,26 +174,26 @@ function UI.drawWaveBanner(enemyManager, screenW, screenH)
     love.graphics.scale(scale, scale)
 
     -- Background overlay banner
-    love.graphics.setColor(Colors.get("menuBoxBg", alpha * 0.85))
+    love.graphics.setColor(Colors.getRGBA("menuBoxBg", alpha * 0.85))
     love.graphics.rectangle("fill", -screenW / 2, -45, screenW, 90)
 
     -- Glowing top & bottom border lines
-    love.graphics.setColor(Colors.get("titleText", alpha * 0.9))
+    love.graphics.setColor(Colors.getRGBA("titleText", alpha * 0.9))
     love.graphics.rectangle("fill", -screenW / 2, -45, screenW, 2)
     love.graphics.rectangle("fill", -screenW / 2, 43, screenW, 2)
 
     -- Drop shadow for text
     love.graphics.setFont(Fonts.title)
-    love.graphics.setColor(Colors.get("black", alpha * 0.9))
+    love.graphics.setColor(Colors.getRGBA("black", alpha * 0.9))
     love.graphics.printf(text, -screenW / 2 + 2, -33, screenW, "center")
 
     -- Main title text
-    love.graphics.setColor(Colors.get("titleText", alpha))
+    love.graphics.setColor(Colors.getRGBA("titleText", alpha))
     love.graphics.printf(text, -screenW / 2, -35, screenW, "center")
 
     -- Subtitle prompt
     love.graphics.setFont(Fonts.bold)
-    love.graphics.setColor(Colors.get("menuPrompt", alpha))
+    love.graphics.setColor(Colors.getRGBA("menuPrompt", alpha))
     love.graphics.printf("PREPARE FOR BATTLE!", -screenW / 2, 12, screenW, "center")
 
     love.graphics.pop()

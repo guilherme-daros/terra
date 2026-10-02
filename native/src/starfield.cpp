@@ -49,4 +49,21 @@ auto NativeStarfield::getBuffer() const -> std::vector<float> {
     return buf;
 }
 
+auto NativeStarfield::getRawBytes() const -> std::string {
+    std::string bytes(stars.size() * 4 * sizeof(float), '\0');
+    float* ptr = reinterpret_cast<float*>(bytes.data());
+    std::size_t idx = 0;
+    for (const auto& star : stars) {
+        ptr[idx++] = star.x;
+        ptr[idx++] = star.y;
+        ptr[idx++] = star.size;
+        ptr[idx++] = star.brightness;
+    }
+    return bytes;
+}
+
+auto NativeStarfield::getStarCount() const -> int {
+    return static_cast<int>(stars.size());
+}
+
 } // namespace cosmic

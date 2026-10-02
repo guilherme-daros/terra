@@ -20,7 +20,7 @@ function EnemyManager.preloadIcons(font, iconList)
             love.graphics.setCanvas(canvas)
             love.graphics.clear(0, 0, 0, 0)
             love.graphics.setFont(font)
-            love.graphics.setColor(Colors.get("white"))
+            love.graphics.setColor(Colors.getRGBA("white"))
             love.graphics.print(icon, origin, origin)
 
             -- 2. Unbind canvas BEFORE calling newImageData()
@@ -321,16 +321,16 @@ function EnemyManager:draw(fonts)
         love.graphics.rotate(e.rotation)
 
         if e.type == "asteroid" then
-            love.graphics.setColor(Colors.get(e.color, 0.9))
+            love.graphics.setColor(Colors.getRGBA(e.color, 0.9))
             love.graphics.polygon("fill", e.vertices)
-            love.graphics.setColor(Colors.get("asteroidLine"))
+            love.graphics.setColor(Colors.getRGBA("asteroidLine"))
             love.graphics.polygon("line", e.vertices)
         elseif e.type == "drone" then
-            love.graphics.setColor(Colors.get(e.color))
+            love.graphics.setColor(Colors.getRGBA(e.color))
             love.graphics.polygon("fill", 14, 0, -10, -10, -4, 0, -10, 10)
-            love.graphics.setColor(Colors.get("droneLine"))
+            love.graphics.setColor(Colors.getRGBA("droneLine"))
             love.graphics.polygon("line", 14, 0, -10, -10, -4, 0, -10, 10)
-            love.graphics.setColor(Colors.get("droneEye"))
+            love.graphics.setColor(Colors.getRGBA("droneEye"))
             love.graphics.circle("fill", 2, 0, 3)
         end
 
@@ -341,9 +341,9 @@ function EnemyManager:draw(fonts)
     for _, p in ipairs(self.powerups) do
         local pulse = 1 + 0.15 * math.sin(love.timer.getTime() * 8)
         local r = p.radius * pulse
-        love.graphics.setColor(Colors.get(p.color, 0.9))
+        love.graphics.setColor(Colors.getRGBA(p.color, 0.9))
         love.graphics.circle("fill", p.x, p.y, r)
-        love.graphics.setColor(Colors.get("white", 0.9))
+        love.graphics.setColor(Colors.getRGBA("white", 0.9))
         love.graphics.circle("line", p.x, p.y, r)
 
         local font = (fonts and fonts.medium) or love.graphics.getFont()
@@ -355,11 +355,11 @@ function EnemyManager:draw(fonts)
         local dx, dy = EnemyManager.getIconOffset(font, icon)
 
         love.graphics.setFont(font)
-        love.graphics.setColor(Colors.get("powerupIcon"))
+        love.graphics.setColor(Colors.getRGBA("powerupIcon"))
         love.graphics.print(icon, math.floor(p.x - dx), math.floor(p.y - dy))
     end
 
-    love.graphics.setColor(Colors.get("white"))
+    love.graphics.setColor(Colors.getRGBA("white"))
 end
 
 function EnemyManager:clear()

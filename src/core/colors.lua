@@ -61,6 +61,17 @@ local Colors = {
     starBase        = { 0.8, 0.9, 1.0, 1.00 }
 }
 
+--- Retrieves RGBA scalar components for the specified color key or table, with optional alpha override.
+--- Zero-allocation helper for love.graphics.setColor(Colors.getRGBA(...))
+---@param color string|table|nil
+---@param alpha number|nil
+---@return number, number, number, number
+function Colors.getRGBA(color, alpha)
+    local c = type(color) == "string" and Colors[color] or color
+    c = c or Colors.white
+    return c[1], c[2], c[3], alpha or c[4] or 1.0
+end
+
 --- Retrieves an RGBA table for the specified color key or table, with optional alpha override.
 ---@param color string|table|nil
 ---@param alpha number|nil
@@ -76,14 +87,22 @@ function Colors.get(color, alpha)
     end
 end
 
+--- Helper to calculate dynamic health bar color gradient (Red -> Yellow -> Green) as RGBA scalars
+---@param hpPercent number
+---@return number, number, number, number
+function Colors.getHealthColorRGBA(hpPercent)
+    local r = 1.0 - hpPercent
+    local g = hpPercent * 0.9
+    local b = 0.3
+    return r, g, b, 0.9
+end
+
 --- Helper to calculate dynamic health bar color gradient (Red -> Yellow -> Green)
 ---@param hpPercent number
 ---@return table
 function Colors.getHealthColor(hpPercent)
-    local r = 1.0 - hpPercent
-    local g = hpPercent * 0.9
-    local b = 0.3
-    return { r, g, b, 0.9 }
+    local r, g, b, a = Colors.getHealthColorRGBA(hpPercent)
+    return { r, g, b, a }
 end
 
 return Colors

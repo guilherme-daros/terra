@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <string>
 
 namespace cosmic {
 
@@ -23,6 +24,8 @@ public:
     NativeStarfield(float width, float height, int count);
     void update(float dt, float gameTime);
     auto getBuffer() const -> std::vector<float>;
+    auto getRawBytes() const -> std::string;
+    auto getStarCount() const -> int;
 };
 
 } // namespace cosmic

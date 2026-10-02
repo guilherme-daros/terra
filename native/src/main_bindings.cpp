@@ -44,6 +44,8 @@ extern "C" auto luaopen_cosmic_native(core::State *L) -> int {
     luakit::Class<NativeStarfield>(L, "NativeStarfield")
         .method<&NativeStarfield::update>("update")
         .method<&NativeStarfield::getBuffer>("get_buffer")
+        .method<&NativeStarfield::getRawBytes>("get_raw_bytes")
+        .method<&NativeStarfield::getStarCount>("get_star_count")
         .ctor<float, float, int>("new")
         .build_module();
 
