@@ -1,6 +1,7 @@
 #include "audio_synth.hpp"
 #include <algorithm>
 #include <random>
+#include <cstdint>
 
 #if defined(__x86_64__) || defined(_M_X64) || defined(__i386__)
 #include <emmintrin.h>
@@ -14,6 +15,11 @@
 
 namespace cosmic {
 
+static inline int16_t floatToSample(float val) {
+    val = std::clamp(val, -1.0f, 1.0f);
+    return static_cast<int16_t>(val * 32767.0f);
+}
+
 auto AudioSynth::generateLaser(float startFreq, float endFreq, float duration, int sampleRate) -> std::vector<float> {
     int samples = static_cast<int>(sampleRate * duration);
     std::vector<float> buffer(samples);
@@ -23,7 +29,6 @@ auto AudioSynth::generateLaser(float startFreq, float endFreq, float duration, i
 
     int i = 0;
 #if defined(HAS_SSE2)
-    // 4-wide SSE2 SIMD vectorization loop
     __m128 v_start   = _mm_set1_ps(startFreq);
     __m128 v_diff    = _mm_set1_ps(endFreq - startFreq);
     __m128 v_invSamp = _mm_set1_ps(invSamples);
@@ -51,7 +56,6 @@ auto AudioSynth::generateLaser(float startFreq, float endFreq, float duration, i
     }
 #endif
 
-    // Remainder loop
     for (; i < samples; ++i) {
         float progress = static_cast<float>(i) * invSamples;
         float freq = startFreq + (endFreq - startFreq) * progress;
@@ -59,6 +63,16 @@ auto AudioSynth::generateLaser(float startFreq, float endFreq, float duration, i
         buffer[i] = std::sin(phase) * (1.0f - progress) * 0.4f;
     }
     return buffer;
+}
+
+auto AudioSynth::generateLaserBytes(float startFreq, float endFreq, float duration, int sampleRate) -> std::string {
+    auto floats = generateLaser(startFreq, endFreq, duration, sampleRate);
+    std::string bytes(floats.size() * sizeof(int16_t), '\0');
+    int16_t* ptr = reinterpret_cast<int16_t*>(bytes.data());
+    for (std::size_t i = 0; i < floats.size(); ++i) {
+        ptr[i] = floatToSample(floats[i]);
+    }
+    return bytes;
 }
 
 auto AudioSynth::generateNoise(float duration, int sampleRate) -> std::vector<float> {
@@ -79,7 +93,7 @@ auto AudioSynth::generateNoise(float duration, int sampleRate) -> std::vector<fl
         __m128 v_idx = _mm_set_ps(i + 3, i + 2, i + 1, i);
         __m128 v_prog = _mm_mul_ps(v_idx, v_invSamp);
         __m128 v_env  = _mm_sub_ps(v_one, v_prog);
-        v_env = _mm_mul_ps(v_env, v_env); // envelope^2
+        v_env = _mm_mul_ps(v_env, v_env);
 
         alignas(16) float randVals[4];
         for (int k = 0; k < 4; ++k) {
@@ -97,6 +111,16 @@ auto AudioSynth::generateNoise(float duration, int sampleRate) -> std::vector<fl
         buffer[i] = dist(rng) * envelope * 0.4f;
     }
     return buffer;
+}
+
+auto AudioSynth::generateNoiseBytes(float duration, int sampleRate) -> std::string {
+    auto floats = generateNoise(duration, sampleRate);
+    std::string bytes(floats.size() * sizeof(int16_t), '\0');
+    int16_t* ptr = reinterpret_cast<int16_t*>(bytes.data());
+    for (std::size_t i = 0; i < floats.size(); ++i) {
+        ptr[i] = floatToSample(floats[i]);
+    }
+    return bytes;
 }
 
 auto AudioSynth::generateTone(float startFreq, float endFreq, float duration, std::string waveType, int sampleRate) -> std::vector<float> {
@@ -122,6 +146,16 @@ auto AudioSynth::generateTone(float startFreq, float endFreq, float duration, st
     return buffer;
 }
 
+auto AudioSynth::generateToneBytes(float startFreq, float endFreq, float duration, std::string waveType, int sampleRate) -> std::string {
+    auto floats = generateTone(startFreq, endFreq, duration, waveType, sampleRate);
+    std::string bytes(floats.size() * sizeof(int16_t), '\0');
+    int16_t* ptr = reinterpret_cast<int16_t*>(bytes.data());
+    for (std::size_t i = 0; i < floats.size(); ++i) {
+        ptr[i] = floatToSample(floats[i]);
+    }
+    return bytes;
+}
+
 auto AudioSynth::generateArpeggio(std::vector<double> notes, float totalDuration, int sampleRate) -> std::vector<float> {
     int samples = static_cast<int>(sampleRate * totalDuration);
     std::vector<float> buffer(samples);
@@ -139,6 +173,16 @@ auto AudioSynth::generateArpeggio(std::vector<double> notes, float totalDuration
         buffer[i] = static_cast<float>(std::sin(2.0 * M_PI * freq * t)) * (1.0f - progress) * 0.3f;
     }
     return buffer;
+}
+
+auto AudioSynth::generateArpeggioBytes(std::vector<double> notes, float totalDuration, int sampleRate) -> std::string {
+    auto floats = generateArpeggio(notes, totalDuration, sampleRate);
+    std::string bytes(floats.size() * sizeof(int16_t), '\0');
+    int16_t* ptr = reinterpret_cast<int16_t*>(bytes.data());
+    for (std::size_t i = 0; i < floats.size(); ++i) {
+        ptr[i] = floatToSample(floats[i]);
+    }
+    return bytes;
 }
 
 } // namespace cosmic

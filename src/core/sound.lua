@@ -1,4 +1,5 @@
 local hasNative, native = pcall(require, "cosmic_native")
+local hasFFI, ffi     = pcall(require, "ffi")
 
 local Sound = {}
 Sound.enabled = true
@@ -36,7 +37,10 @@ function Sound.generateLaser(startFreq, endFreq, duration)
     local samplesCount = math.floor(sampleRate * duration)
     local soundData = love.sound.newSoundData(samplesCount, sampleRate, 16, 1)
 
-    if hasNative and native.generate_laser then
+    if hasNative and hasFFI and native.generate_laser_bytes then
+        local rawBytes = native.generate_laser_bytes(startFreq, endFreq, duration, sampleRate)
+        ffi.copy(soundData:getPointer(), rawBytes, #rawBytes)
+    elseif hasNative and native.generate_laser then
         local rawBuf = native.generate_laser(startFreq, endFreq, duration, sampleRate)
         for i = 0, #rawBuf - 1 do
             soundData:setSample(i, rawBuf[i + 1])
@@ -59,7 +63,10 @@ function Sound.generateNoise(duration)
     local samplesCount = math.floor(sampleRate * duration)
     local soundData = love.sound.newSoundData(samplesCount, sampleRate, 16, 1)
 
-    if hasNative and native.generate_noise then
+    if hasNative and hasFFI and native.generate_noise_bytes then
+        local rawBytes = native.generate_noise_bytes(duration, sampleRate)
+        ffi.copy(soundData:getPointer(), rawBytes, #rawBytes)
+    elseif hasNative and native.generate_noise then
         local rawBuf = native.generate_noise(duration, sampleRate)
         for i = 0, #rawBuf - 1 do
             soundData:setSample(i, rawBuf[i + 1])
@@ -81,7 +88,10 @@ function Sound.generateTone(startFreq, endFreq, duration, waveType)
     local samplesCount = math.floor(sampleRate * duration)
     local soundData = love.sound.newSoundData(samplesCount, sampleRate, 16, 1)
 
-    if hasNative and native.generate_tone then
+    if hasNative and hasFFI and native.generate_tone_bytes then
+        local rawBytes = native.generate_tone_bytes(startFreq, endFreq, duration, waveType or "sine", sampleRate)
+        ffi.copy(soundData:getPointer(), rawBytes, #rawBytes)
+    elseif hasNative and native.generate_tone then
         local rawBuf = native.generate_tone(startFreq, endFreq, duration, waveType or "sine", sampleRate)
         for i = 0, #rawBuf - 1 do
             soundData:setSample(i, rawBuf[i + 1])
@@ -112,7 +122,10 @@ function Sound.generateArpeggio(notes, totalDuration)
     local samplesCount = math.floor(sampleRate * totalDuration)
     local soundData = love.sound.newSoundData(samplesCount, sampleRate, 16, 1)
 
-    if hasNative and native.generate_arpeggio then
+    if hasNative and hasFFI and native.generate_arpeggio_bytes then
+        local rawBytes = native.generate_arpeggio_bytes(notes, totalDuration, sampleRate)
+        ffi.copy(soundData:getPointer(), rawBytes, #rawBytes)
+    elseif hasNative and native.generate_arpeggio then
         local rawBuf = native.generate_arpeggio(notes, totalDuration, sampleRate)
         for i = 0, #rawBuf - 1 do
             soundData:setSample(i, rawBuf[i + 1])

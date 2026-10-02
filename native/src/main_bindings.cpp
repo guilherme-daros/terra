@@ -53,6 +53,10 @@ extern "C" auto luaopen_cosmic_native(core::State *L) -> int {
         .fn<AudioSynth::generateNoise>("generate_noise")
         .fn<AudioSynth::generateTone>("generate_tone")
         .fn<AudioSynth::generateArpeggio>("generate_arpeggio")
+        .fn<AudioSynth::generateLaserBytes>("generate_laser_bytes")
+        .fn<AudioSynth::generateNoiseBytes>("generate_noise_bytes")
+        .fn<AudioSynth::generateToneBytes>("generate_tone_bytes")
+        .fn<AudioSynth::generateArpeggioBytes>("generate_arpeggio_bytes")
         .fn<createSpatialGrid>("create_spatial_grid")
         .fn<createStarfield>("create_starfield")
         .build_module();
