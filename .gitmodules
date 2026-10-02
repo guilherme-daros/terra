@@ -1,0 +1,3 @@
+[submodule "native/external/luakit"]
+	path = native/external/luakit
+	url = https://github.com/guilherme-daros/luakit
