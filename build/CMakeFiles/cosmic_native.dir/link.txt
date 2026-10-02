@@ -1,1 +1,0 @@
-/usr/bin/c++ -fPIC -shared -Wl,--dependency-file=CMakeFiles/cosmic_native.dir/link.d -Wl,-soname,cosmic_native.so -o cosmic_native.so CMakeFiles/cosmic_native.dir/native/src/audio_synth.cpp.o CMakeFiles/cosmic_native.dir/native/src/spatial_grid.cpp.o CMakeFiles/cosmic_native.dir/native/src/starfield.cpp.o CMakeFiles/cosmic_native.dir/native/src/main_bindings.cpp.o
