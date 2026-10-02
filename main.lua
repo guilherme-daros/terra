@@ -1,3 +1,5 @@
+package.cpath = package.cpath .. ";build/?.so;?.so"
+
 local Starfield = require("src.entities.starfield")
 local ParticleSystem = require("src.entities.particle")
 local Sound = require("src.core.sound")

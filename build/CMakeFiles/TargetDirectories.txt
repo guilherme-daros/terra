@@ -1,0 +1,3 @@
+/home/geagaa/workspace/terra/build/CMakeFiles/cosmic_native.dir
+/home/geagaa/workspace/terra/build/CMakeFiles/edit_cache.dir
+/home/geagaa/workspace/terra/build/CMakeFiles/rebuild_cache.dir
