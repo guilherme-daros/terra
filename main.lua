@@ -1,5 +1,24 @@
 package.cpath = package.cpath .. ";build/?.so;?.so"
 
+-- Support standalone fused binary execution by extracting bundled cosmic_native.so if inside fused package
+if love and love.filesystem then
+    local ok, info = pcall(love.filesystem.getInfo, "cosmic_native.so")
+    if ok and info then
+        local saveDir = love.filesystem.getSaveDirectory()
+        love.filesystem.createDirectory("")
+        local extractedPath = saveDir .. "/cosmic_native.so"
+        local data = love.filesystem.read("cosmic_native.so")
+        if data then
+            local f = io.open(extractedPath, "wb")
+            if f then
+                f:write(data)
+                f:close()
+                package.cpath = package.cpath .. ";" .. extractedPath
+            end
+        end
+    end
+end
+
 local Starfield = require("src.entities.starfield")
 local ParticleSystem = require("src.entities.particle")
 local Sound = require("src.core.sound")

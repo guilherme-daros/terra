@@ -1,9 +1,6 @@
 # Build output
-build/CMakeFiles/
-build/CMakeCache.txt
-build/Makefile
-build/cmake_install.cmake
-build/*.cmake
+build/
+dist/
 
 # macOS
 .DS_Store
