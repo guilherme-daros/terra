@@ -6,5 +6,5 @@ CXX_DEFINES = -Dcosmic_native_EXPORTS
 
 CXX_INCLUDES = -I/home/geagaa/workspace/terra/native/external/luakit/lib -I/usr/include/lua5.4
 
-CXX_FLAGS = -std=gnu++20 -fPIC
+CXX_FLAGS = -std=gnu++20 -fPIC -O3 -march=native -ffast-math
 
